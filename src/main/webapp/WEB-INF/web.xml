@@ -13,6 +13,10 @@
         <servlet-name>HospitalServlet</servlet-name>
         <servlet-class>lk.spark.ishani.controller.HospitalServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.controller.DoctorServlet</servlet-class>
+    </servlet>
 
     /*servlet mapping*/
     <servlet-mapping>
@@ -22,6 +26,10 @@
     <servlet-mapping>
         <servlet-name>HospitalServlet</servlet-name>
         <url-pattern>/hospital</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorServlet</servlet-name>
+        <url-pattern>/doctor</url-pattern>
     </servlet-mapping>
 
 </web-app>
