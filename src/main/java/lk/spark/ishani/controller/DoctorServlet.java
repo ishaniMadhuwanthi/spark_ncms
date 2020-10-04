@@ -87,7 +87,7 @@ public class DoctorServlet extends HttpServlet {
                 System.out.println("Update failed");//update process failed
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

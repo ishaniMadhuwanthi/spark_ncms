@@ -9,20 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PatientDao {
-    //patient registration
-    public String regPatient(Patient patient) {
-        String INSERT_USERS_SQL = "INSERT INTO patient (id, first_name, last_name, contact,addrress,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
-        Connection con = null;
-        PreparedStatement stmt = null;
-        int result = 0;
+    public String regPatient(Patient patient) {
 
         try {
            // UUID uuid = UUID.randomUUID();
-            con = DBConnectionPool.getInstance().getConnection();
+            Connection con = DBConnectionPool.getInstance().getConnection();
 
-            // Step 2:Create a statement using connection object
-            stmt = con.prepareStatement(INSERT_USERS_SQL);
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO patient (id, first_name, last_name, contact,addrress,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
             stmt.setInt(1, patient.getId());
            // stmt.setString(1, uuid.toString());
             stmt.setString(2, patient.getFirst_name());
@@ -42,7 +36,7 @@ public class PatientDao {
             stmt.setInt(16, patient.getDischarged_by());
 
             System.out.println(stmt);
-            result = stmt.executeUpdate();//execute updatings
+            int result = stmt.executeUpdate();//execute updatings
 
             if (result!=0)
                 return "success";//successfully inserted into databse

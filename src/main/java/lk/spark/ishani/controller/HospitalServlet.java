@@ -117,7 +117,7 @@ public class HospitalServlet extends HttpServlet {
             pstmt.setString(1, id);
             pstmt.executeUpdate();
         }catch(Exception e) {
-            //throwables.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

@@ -10,17 +10,11 @@ import java.sql.SQLException;
 
 public class HospitalDao {
     public String regHospital(Hospital hospital) {
-       //String INSERT_USERS_SQL = "INSERT INTO hospital (id, name, district, x_location, y_location, build_date) VALUES (?, ?, ?, ?, ?, ?)";
-
-        Connection con = null;
-        PreparedStatement stmt = null;
-        int result = 0;
 
         try {
-            con = DBConnectionPool.getInstance().getConnection();
+            Connection  con = DBConnectionPool.getInstance().getConnection();
 
-            // Create a statement using connection object
-            stmt = con.prepareStatement("INSERT INTO hospital (id, name, district, x_location, y_location, build_date) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement  stmt = con.prepareStatement("INSERT INTO hospital (id, name, district, x_location, y_location, build_date) VALUES (?, ?, ?, ?, ?, ?)");
             stmt.setString(1, hospital.getId());
             stmt.setString(2, hospital.getName());
             stmt.setString(3, hospital.getDistrict());
@@ -29,7 +23,7 @@ public class HospitalDao {
             stmt.setDate(6, (Date) hospital.getBuild_date());
 
             System.out.println(stmt);
-            result = stmt.executeUpdate();
+            int result = stmt.executeUpdate();
 
             if (result != 0)
                 return "success";//successfully inserted into databse

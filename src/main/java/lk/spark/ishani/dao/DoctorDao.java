@@ -11,21 +11,17 @@ public class DoctorDao {
 
     public String regDoctor(Doctor doctor) {
 
-        Connection con = null;
-        PreparedStatement stmt = null;
-        int result = 0;
-
         try {
-            con = DBConnectionPool.getInstance().getConnection();
+            Connection  con = DBConnectionPool.getInstance().getConnection();
 
-            stmt = con.prepareStatement("INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)");
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)");
             stmt.setInt(1, doctor.getId());
             stmt.setString(2, doctor.getName());
             stmt.setString(3, doctor.getHospital_id());
             stmt.setBoolean(4, doctor.isIs_director());
 
             System.out.println(stmt);
-            result = stmt.executeUpdate();
+            int result = stmt.executeUpdate();
 
             if (result != 0)
                 return "success";//inserted successfully
@@ -37,5 +33,19 @@ public class DoctorDao {
         return "Failed";//insertion failed
     }
 
-
+    private void printSQLException(SQLException ex) {
+        for (Throwable e: ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(System.err);
+                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+                System.err.println("Message: " + e.getMessage());
+                Throwable tmsg = ex.getCause();
+                while (tmsg != null) {
+                    System.out.println("Cause: " + tmsg);
+                    tmsg = tmsg.getCause();
+                }
+            }
+        }
+    }
 }
