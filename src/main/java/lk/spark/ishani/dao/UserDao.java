@@ -19,7 +19,7 @@ public class UserDao {
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getName());
             pstmt.setBoolean(4, user.isMoh());
-            pstmt.setBoolean(5, user.isHospital());
+            pstmt.setBoolean(5, user.isDoctor());
 
             System.out.println(pstmt);
             int result = pstmt.executeUpdate();

@@ -27,13 +27,17 @@ public class Patient {
     private int admitted_by;
     private Date discharge_date;
     private int discharged_by;
+    private String serial_no;
 
-    public Patient(int id) {
-        this.id = id;
-    }
-    public Patient(){
 
+    public String getSerial_no() {
+        return serial_no;
     }
+
+    public void setSerial_no(String serial_no) {
+        this.serial_no = serial_no;
+    }
+
     public int getId() {
         return id;
     }
@@ -162,6 +166,13 @@ public class Patient {
         this.discharged_by = discharged_by;
     }
 
+    public Patient(int id) {
+        this.id = id;
+    }
+    public Patient(){
+
+    }
+
     //Serialise patient data to Json Object
     public JsonObject serialize () {
         JsonObject jsonObj = new JsonObject();
@@ -182,6 +193,7 @@ public class Patient {
         jsonObj.addProperty("admitted_by", this.admitted_by);
         jsonObj.addProperty("discharge_date", this.discharge_date != null ? this.discharge_date.toString() : null);
         jsonObj.addProperty("discharged_by", this.discharged_by);
+        jsonObj.addProperty("serial_no",this.serial_no);
 
         return jsonObj;
     }
@@ -213,6 +225,7 @@ public class Patient {
                 this.admitted_by = resultSet.getInt("admitted_by");
                 this.discharge_date = resultSet.getDate("discharge_date");
                 this.discharged_by = resultSet.getInt("discharged_by");
+                this.serial_no = resultSet.getString("serial_no");
             }
             connection.close();
         } catch (Exception exception) {

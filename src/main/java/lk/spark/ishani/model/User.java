@@ -13,7 +13,16 @@ public class User {
     private String password;
     private String name;
     private boolean moh;
-    private boolean hospital;
+    private boolean doctor;
+    private boolean patient;
+
+    public boolean isPatient() {
+        return patient;
+    }
+
+    public void setPatient(boolean patient) {
+        this.patient = patient;
+    }
 
     public User(String username){
         this.username=username;
@@ -55,15 +64,13 @@ public class User {
         this.moh = moh;
     }
 
-    public boolean isHospital() {
-        return hospital;
+    public boolean isDoctor() {
+        return doctor;
     }
 
-    public void setHospital(boolean hospital) {
-        this.hospital = hospital;
+    public void setDoctor(boolean doctor) {
+        this.doctor = doctor;
     }
-
-
 
     //serialize data into json object
     public JsonObject serialize() {
@@ -73,7 +80,8 @@ public class User {
         jsonObj.addProperty("password", this.password);
         jsonObj.addProperty("name", this.name);
         jsonObj.addProperty("moh", this.moh);
-        jsonObj.addProperty("hospital", this.hospital);
+        jsonObj.addProperty("doctor", this.doctor);
+        jsonObj.addProperty("patient",this.patient);
 
         return jsonObj;
     }
@@ -91,11 +99,10 @@ public class User {
                 this.password = resultSet.getString("password");
                 this.name = resultSet.getString("name");
                 this.moh = resultSet.getBoolean("moh");
-                this.hospital = resultSet.getBoolean("hospital");
+                this.doctor = resultSet.getBoolean("doctor");
+                this.patient = resultSet.getBoolean("patient");
             }
-
             con.close();
-
         } catch (Exception exception) {
 
         }

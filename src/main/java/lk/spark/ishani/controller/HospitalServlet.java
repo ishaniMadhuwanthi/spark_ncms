@@ -23,6 +23,10 @@ public class HospitalServlet extends HttpServlet {
         Hospital hospital = new Hospital(request.getParameter("id"));
         hospital.loadHospitalData();
         System.out.println("Loading success");
+//        PrintWriter writer = new PrintWriter(System.out);
+//        writer.write("hello doctor");
+//        writer.flush();
+
     }
 
     //insert(build) new hospital

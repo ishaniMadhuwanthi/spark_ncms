@@ -16,7 +16,7 @@ public class PatientDao {
            // UUID uuid = UUID.randomUUID();
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO patient (id, first_name, last_name, contact,addrress,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO patient (id, first_name, last_name, contact,address,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by,serial_no) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
             stmt.setInt(1, patient.getId());
            // stmt.setString(1, uuid.toString());
             stmt.setString(2, patient.getFirst_name());
@@ -34,12 +34,13 @@ public class PatientDao {
             stmt.setInt(14, patient.getAdmitted_by());
             stmt.setDate(15, (Date) patient.getDischarge_date());
             stmt.setInt(16, patient.getDischarged_by());
+            stmt.setString(17,patient.getSerial_no());
 
             System.out.println(stmt);
-            int result = stmt.executeUpdate();//execute updatings
+            int result = stmt.executeUpdate();//execute updating
 
             if (result!=0)
-                return "success";//successfully inserted into databse
+                return "success";//successfully inserted into database
 
         } catch (SQLException e) {
             // process sql exception

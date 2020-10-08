@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "UserServlet")
 public class UserServlet extends HttpServlet {
@@ -22,14 +21,14 @@ public class UserServlet extends HttpServlet {
         String password = req.getParameter("password");
         String name = req.getParameter("name");
         Boolean moh = Boolean.valueOf(req.getParameter("moh"));
-        Boolean hospital = Boolean.valueOf(req.getParameter("hospital"));
+        Boolean doctor = Boolean.valueOf(req.getParameter("hospital"));
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
         user.setName(name);
         user.setMoh(moh);
-        user.setHospital(hospital);
+        user.setDoctor(doctor);
 
         UserDao userDao = new UserDao();
         String userRegistered = userDao.regUser(user);

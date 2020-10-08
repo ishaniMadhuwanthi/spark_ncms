@@ -1,6 +1,7 @@
 package lk.spark.ishani.controller;
 
 import lk.spark.ishani.dao.PatientDao;
+import lk.spark.ishani.model.Hospital;
 import lk.spark.ishani.model.Patient;
 
 import javax.servlet.ServletException;
@@ -9,11 +10,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 
 @WebServlet(name = "PatientServlet")
 public class PatientServlet extends HttpServlet {
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String first_name = request.getParameter("first_name");
@@ -37,6 +40,7 @@ public class PatientServlet extends HttpServlet {
         Date discharge_date = new Date(date_discharged.getTime());
 
         int discharged_by = Integer.parseInt(request.getParameter("discharged_by"));
+        String serial_no = request.getParameter("serial_no");
 
         Patient patient = new Patient();
         patient.setId(id);
@@ -55,6 +59,7 @@ public class PatientServlet extends HttpServlet {
         patient.setAdmitted_by(admitted_by);
         patient.setDischarge_date(discharge_date);
         patient.setDischarged_by(discharged_by);
+        patient.setSerial_no(serial_no);
 
         PatientDao patientDao = new PatientDao();
         String patientReg = patientDao.regPatient(patient);
@@ -78,10 +83,19 @@ public class PatientServlet extends HttpServlet {
     }
 
     //view patient details
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
         Patient patient = new Patient(Integer.parseInt(request.getParameter("id")));
         patient.loadPatientData();
         System.out.println("Loading Success");
+
+        Hospital hospital = new Hospital();
+        String nearestHospital = hospital.getDistance();
+        //System.out.println("Nearest hospital: " + nearestHospital);
+        PrintWriter writer = new PrintWriter(System.out);
+        writer.write(nearestHospital);
+        writer.flush();
+
     }
 
 }

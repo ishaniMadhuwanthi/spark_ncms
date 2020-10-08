@@ -6,9 +6,14 @@ import lk.spark.ishani.database.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
+import java.util.*;
+
+import static java.util.Comparator.comparingDouble;
+
 
 public class Hospital {
+
+    protected final int BED_COUNT = 10;
 
     private String id;
     private String name;
@@ -90,11 +95,9 @@ public class Hospital {
 public void loadHospitalData() {
     try {
         Connection con = DBConnectionPool.getInstance().getConnection();
-        PreparedStatement stmt;
-        ResultSet resultSet;
 
-        stmt = con.prepareStatement("SELECT * FROM patient WHERE id=? LIMIT 1");
-        resultSet = stmt.executeQuery();
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM hospital WHERE id=? LIMIT 1");
+        ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
             this.id = resultSet.getString("id");
             this.name = resultSet.getString("name");
@@ -108,4 +111,76 @@ public void loadHospitalData() {
 
     }
 }
+
+//get available bed count
+private ArrayList<Bed> beds;
+
+    public int getAvailableBedCount()  {
+        try{
+            Connection con = DBConnectionPool.getInstance().getConnection();
+
+            this.beds = new ArrayList<Bed>();
+
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM beds WHERE hospital_id=? and serial_no IS NULL");
+            ResultSet resultSet = stmt.executeQuery();
+
+            stmt.setInt(1, Integer.parseInt(this.id));
+
+            Hospital x=new Hospital();
+            int count = x.getCount(resultSet);
+            con.close();
+
+            return count;
+
+        }catch(Exception e){
+            return 0;
+        }
+    }
+
+    //to calculate count
+    public int getCount(ResultSet resultSet){
+
+        try {
+            while (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
+            return 0;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    //calculate shortest distance to the hospital from patient location coordinates and return nearest hospital
+    public String getDistance(int x_location, int y_location) {
+
+        Map<String, Double> distance = new HashMap<String, Double>();
+        String nearestHospital="";
+
+        try{
+            Connection con = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM hospital");
+            System.out.println(stmt);
+            resultSet = stmt.executeQuery();
+
+            while (resultSet.next()) {
+                Patient patientObj=new Patient();
+                String hospital_id = resultSet.getString("id");
+                int hospitalx_location = resultSet.getInt("x_location");
+                int hospitaly_location = resultSet.getInt("y_location");
+                int x_distance = Math.abs(hospitalx_location - patientObj.getX_location());
+                int y_distance = Math.abs(hospitaly_location - patientObj.getY_location());
+
+                double dist = Math.sqrt(Math.pow(x_distance, 2) + Math.pow(y_distance, 2));
+                distance.put(hospital_id,dist);
+            }
+            nearestHospital = Collections.min(distance.entrySet(), comparingDouble(Map.Entry::getValue)).getKey();
+            System.out.println(nearestHospital);
+            con.close();
+        }catch(Exception e){
+
+        }
+        return nearestHospital;
+    }
 }
