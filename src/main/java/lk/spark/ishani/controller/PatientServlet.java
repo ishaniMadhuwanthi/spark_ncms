@@ -1,6 +1,7 @@
 package lk.spark.ishani.controller;
 
 import lk.spark.ishani.dao.PatientDao;
+import lk.spark.ishani.model.Bed;
 import lk.spark.ishani.model.Hospital;
 import lk.spark.ishani.model.Patient;
 
@@ -43,7 +44,7 @@ public class PatientServlet extends HttpServlet {
         String serial_no = request.getParameter("serial_no");
 
         Patient patient = new Patient();
-        patient.setId(id);
+        patient.setPatient_id(id);
         patient.setFirst_name(first_name);
         patient.setLast_name(last_name);
         patient.setContact(contact);
@@ -90,12 +91,16 @@ public class PatientServlet extends HttpServlet {
         System.out.println("Loading Success");
 
         Hospital hospital = new Hospital();
-        String nearestHospital = hospital.getDistance();
+        String nearestHospital = hospital.getDistance(patient.getX_location(),patient.getY_location());
         //System.out.println("Nearest hospital: " + nearestHospital);
         PrintWriter writer = new PrintWriter(System.out);
         writer.write(nearestHospital);
         writer.flush();
 
+        Bed bed =new Bed();
+        int selectedBed=bed.assignBed(patient.getSerial_no(),hospital.getHospital_id());
+        writer.write(selectedBed);
+        writer.flush();
     }
 
 }

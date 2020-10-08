@@ -13,28 +13,26 @@ import static java.util.Comparator.comparingDouble;
 
 public class Hospital {
 
-    protected final int BED_COUNT = 10;
-
-    private String id;
+    private String hospital_id;
     private String name;
     private String district;
     private int x_location;
     private int y_location;
     private Date build_date;
 
-    public Hospital(String id){
-        this.id=id;
+    public Hospital(String hospital_id){
+        this.hospital_id=hospital_id;
     }
     public Hospital(){
 
     }
 
-    public String getId() {
-        return id;
+    public String getHospital_id() {
+        return hospital_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setHospital_id(String hospital_id) {
+        this.hospital_id = hospital_id;
     }
 
     public String getName() {
@@ -81,7 +79,7 @@ public class Hospital {
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.id);
+        jsonObj.addProperty("id", this.hospital_id);
         jsonObj.addProperty("name", this.name);
         jsonObj.addProperty("district", this.district);
         jsonObj.addProperty("x_location", this.x_location);
@@ -96,10 +94,10 @@ public void loadHospitalData() {
     try {
         Connection con = DBConnectionPool.getInstance().getConnection();
 
-        PreparedStatement stmt = con.prepareStatement("SELECT * FROM hospital WHERE id=? LIMIT 1");
+        PreparedStatement stmt = con.prepareStatement("SELECT * FROM hospital WHERE hospital_id=? LIMIT 1");
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            this.id = resultSet.getString("id");
+            this.hospital_id = resultSet.getString("id");
             this.name = resultSet.getString("name");
             this.district = resultSet.getString("district");
             this.x_location = resultSet.getInt("x_location");
@@ -113,18 +111,16 @@ public void loadHospitalData() {
 }
 
 //get available bed count
-private ArrayList<Bed> beds;
+//private ArrayList<Bed> beds;
 
-    public int getAvailableBedCount()  {
+    public int getAvailableBedCount(String hospital_id)  {
         try{
             Connection con = DBConnectionPool.getInstance().getConnection();
-
-            this.beds = new ArrayList<Bed>();
 
             PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM beds WHERE hospital_id=? and serial_no IS NULL");
             ResultSet resultSet = stmt.executeQuery();
 
-            stmt.setInt(1, Integer.parseInt(this.id));
+            stmt.setInt(1, Integer.parseInt(hospital_id));
 
             Hospital x=new Hospital();
             int count = x.getCount(resultSet);
@@ -165,12 +161,11 @@ private ArrayList<Bed> beds;
             resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
-                Patient patientObj=new Patient();
                 String hospital_id = resultSet.getString("id");
                 int hospitalx_location = resultSet.getInt("x_location");
                 int hospitaly_location = resultSet.getInt("y_location");
-                int x_distance = Math.abs(hospitalx_location - patientObj.getX_location());
-                int y_distance = Math.abs(hospitaly_location - patientObj.getY_location());
+                int x_distance = Math.abs(hospitalx_location - x_location);
+                int y_distance = Math.abs(hospitaly_location - y_location);
 
                 double dist = Math.sqrt(Math.pow(x_distance, 2) + Math.pow(y_distance, 2));
                 distance.put(hospital_id,dist);

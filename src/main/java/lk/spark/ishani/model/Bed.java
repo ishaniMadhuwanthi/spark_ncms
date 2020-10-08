@@ -9,16 +9,30 @@ import java.sql.ResultSet;
 
 public class Bed {
 
-    private int id;
+    protected final int BED_COUNT = 10;
+    private int bed_id;
     private int patient_id;
     private  String hospital_id;
+    private String serial_no;
 
-    public int getId() {
-        return id;
+    public Bed(){
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public String getSerial_no() {
+        return serial_no;
+    }
+
+    public void setSerial_no(String serial_no) {
+        this.serial_no = serial_no;
+    }
+
+    public int getBed_id() {
+        return bed_id;
+    }
+
+    public void setBed_id(int bed_id) {
+        this.bed_id = bed_id;
     }
 
     public int getPatient_id() {
@@ -38,8 +52,8 @@ public class Bed {
     }
 
 
-    public Bed(int id, int patient_id, String hospital_d) {
-        this.id = id;
+    public Bed(int bed_id, int patient_id, String hospital_d) {
+        this.bed_id = bed_id;
         this.patient_id = patient_id;
         this.hospital_id = hospital_d;
     }
@@ -47,21 +61,21 @@ public class Bed {
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.id);
+        jsonObj.addProperty("id", this.bed_id);
         jsonObj.addProperty("hospital_id", this.patient_id);
         jsonObj.addProperty("serial_no", this.hospital_id);
 
         return jsonObj;
     }
 
-    public void bedData() {
+    public void loadBedData() {
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt = con.prepareStatement("SELECT * FROM beds WHERE id=? LIMIT 1");
+            PreparedStatement stmt = con.prepareStatement("SELECT * FROM beds WHERE bed_id=? LIMIT 1");
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                this.id = resultSet.getInt("id");
+                this.bed_id = resultSet.getInt("id");
                 this.patient_id = resultSet.getInt("patient_id");
                 this.hospital_id = resultSet.getString("hospital_id");
             }
@@ -71,6 +85,32 @@ public class Bed {
         }
     }
 
-    //allocate bed for patient
+    //assign bed for patient
+    public int assignBed(String serial_no, String hospital_id){
+        Hospital hospitalObj=new Hospital();
+        int availableBeds=hospitalObj.getAvailableBedCount(hospital_id);
+        setSerial_no(serial_no);
+        setPatient_id(patient_id);
+        int []bed= new int[availableBeds];
+
+        try{
+            for(int i=0;i<availableBeds;i++){
+
+                Connection con= DBConnectionPool.getInstance().getConnection();
+
+                PreparedStatement stmt = con.prepareStatement("INSERT INTO beds (patient_id,serial_no) VALUES (patient_id,serial_no)");
+                ResultSet resultSet = stmt.executeQuery();
+                while(resultSet.next()){
+                    int bed_id = resultSet.getInt("bed_id");
+                    bed[bed_id-1]=bed_id;
+                }
+                con.close();
+            }
+
+        }catch(Exception e){
+
+        }
+        return bed_id;
+    }
 
 }

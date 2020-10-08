@@ -11,7 +11,7 @@ import java.util.Date;
 public class Patient {
 
     //patient data
-    private int id;
+    private int patient_id;
     private String first_name;
     private String last_name;
     private String contact;
@@ -38,12 +38,12 @@ public class Patient {
         this.serial_no = serial_no;
     }
 
-    public int getId() {
-        return id;
+    public int getPatient_id() {
+        return patient_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPatient_id(int patient_id) {
+        this.patient_id = patient_id;
     }
 
     public String getFirst_name() {
@@ -167,7 +167,7 @@ public class Patient {
     }
 
     public Patient(int id) {
-        this.id = id;
+        this.patient_id = patient_id;
     }
     public Patient(){
 
@@ -177,7 +177,7 @@ public class Patient {
     public JsonObject serialize () {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.id);
+        jsonObj.addProperty("id", this.patient_id);
         jsonObj.addProperty("first_name", this.first_name);
         jsonObj.addProperty("lastName", this.last_name);
         jsonObj.addProperty("contact", this.contact);
@@ -205,11 +205,11 @@ public class Patient {
             PreparedStatement statement;
             ResultSet resultSet;
 
-            statement = connection.prepareStatement("SELECT * FROM patient WHERE id=? LIMIT 1");
+            statement = connection.prepareStatement("SELECT * FROM patient WHERE patient_id=? LIMIT 1");
             //statement.setInt(1, this.id);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                this.id = resultSet.getInt("id");
+                this.patient_id = resultSet.getInt("id");
                 this.first_name = resultSet.getString("first_name");
                 this.last_name = resultSet.getString("last_name");
                 this.contact = resultSet.getString("contact");
