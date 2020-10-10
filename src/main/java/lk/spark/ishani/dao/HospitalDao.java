@@ -14,8 +14,8 @@ public class HospitalDao {
         try {
             Connection  con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement  stmt = con.prepareStatement("INSERT INTO hospital (id, name, district, x_location, y_location, build_date) VALUES (?, ?, ?, ?, ?, ?)");
-            stmt.setString(1, hospital.getId());
+            PreparedStatement  stmt = con.prepareStatement("INSERT INTO hospital (hospital_id, name, district, x_location, y_location, build_date) VALUES (?, ?, ?, ?, ?, ?)");
+            stmt.setString(1, hospital.getHospital_id());
             stmt.setString(2, hospital.getName());
             stmt.setString(3, hospital.getDistrict());
             stmt.setInt(4, hospital.getX_location());

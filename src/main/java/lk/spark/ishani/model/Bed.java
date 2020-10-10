@@ -113,4 +113,22 @@ public class Bed {
         return bed_id;
     }
 
+    //when discharge a patient have to remove patient and delete bed+id that is assigned for the patient
+    public void removePatient(int patient_id) {
+
+        try {
+            Connection con = DBConnectionPool.getInstance().getConnection();
+
+            PreparedStatement stmt= con.prepareStatement("DELETE FROM beds WHERE patient_id='"+patient_id+"'");
+            System.out.println(stmt);
+            int result = stmt.executeUpdate();
+
+            con.close();
+
+        } catch (Exception exception) {
+
+        }
+    }
+
+
 }

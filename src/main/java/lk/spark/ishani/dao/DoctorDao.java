@@ -14,8 +14,8 @@ public class DoctorDao {
         try {
             Connection  con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO doctor (id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)");
-            stmt.setInt(1, doctor.getId());
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO doctor (doctor_id, name, hospital_id, is_director) VALUES (?, ?, ?, ?)");
+            stmt.setInt(1, doctor.getDoctor_id());
             stmt.setString(2, doctor.getName());
             stmt.setString(3, doctor.getHospital_id());
             stmt.setBoolean(4, doctor.isIs_director());

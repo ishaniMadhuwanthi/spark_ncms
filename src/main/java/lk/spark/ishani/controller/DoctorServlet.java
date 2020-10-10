@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -27,7 +26,7 @@ public class DoctorServlet extends HttpServlet {
         Boolean is_director = Boolean.valueOf(req.getParameter("is_director"));
 
         Doctor doctor = new Doctor();
-        doctor.setId(id);
+        doctor.setDoctor_id(id);
         doctor.setName(name);
         doctor.setHospital_id(hospital_id);
         doctor.setIs_director(is_director);
@@ -55,7 +54,7 @@ public class DoctorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-            Doctor doctor = new Doctor(Integer.parseInt(req.getParameter("id")));
+            Doctor doctor = new Doctor(Integer.parseInt(req.getParameter("doctor_id")));
             doctor.loadDoctorData();
             System.out.println("loading success");
 
@@ -73,7 +72,7 @@ public class DoctorServlet extends HttpServlet {
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement pstmt = con.prepareStatement("UPDATE doctor SET  id=?,name=?, hospital_id=?, is_director=? WHERE id=?");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE doctor SET  doctor_id=?,name=?, hospital_id=?, is_director=? WHERE id=?");
 
             pstmt.setInt(1,id);
             pstmt.setString(2,name);
@@ -101,7 +100,7 @@ public class DoctorServlet extends HttpServlet {
 
             int doctor_id = Integer.parseInt(req.getParameter("id"));
 
-            PreparedStatement pstmt = con.prepareStatement("DELETE FROM doctor WHERE id=?");
+            PreparedStatement pstmt = con.prepareStatement("DELETE FROM doctor WHERE doctor_id=?");
             pstmt.setInt(1, doctor_id);
             pstmt.executeUpdate();
         }catch(Exception e) {

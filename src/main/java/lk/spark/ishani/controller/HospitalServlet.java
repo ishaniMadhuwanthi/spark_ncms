@@ -2,6 +2,8 @@ package lk.spark.ishani.controller;
 
 import lk.spark.ishani.dao.HospitalDao;
 import lk.spark.ishani.database.DBConnectionPool;
+import lk.spark.ishani.model.Bed;
+import lk.spark.ishani.model.Doctor;
 import lk.spark.ishani.model.Hospital;
 
 import javax.servlet.ServletException;
@@ -41,7 +43,7 @@ public class HospitalServlet extends HttpServlet {
         Date build_date = new Date(date_build.getTime());
 
         Hospital hospital = new Hospital();
-        hospital.setId(id);
+        hospital.setHospital_id(id);
         hospital.setName(name);
         hospital.setDistrict(district);
         hospital.setX_location(x_location);
@@ -85,7 +87,7 @@ public class HospitalServlet extends HttpServlet {
             PreparedStatement pstmt=null;
             int result=0;
 
-            pstmt = con.prepareStatement("UPDATE hospital SET  id=?,name=?, district=?, x_location=?,y_location=?,build_date=? WHERE id=?");
+            pstmt = con.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, x_location=?,y_location=?,build_date=? WHERE hospital_id=?");
 
             pstmt.setString(1,id);
             pstmt.setString(2,name);
@@ -115,13 +117,31 @@ public class HospitalServlet extends HttpServlet {
             Connection con = DBConnectionPool.getInstance().getConnection();
             PreparedStatement pstmt=null;
 
-            String id = request.getParameter("id");
+            String h_id = request.getParameter("hospital_id");
 
-            pstmt = con.prepareStatement("DELETE FROM hospital WHERE id=?");
-            pstmt.setString(1, id);
+            pstmt = con.prepareStatement("DELETE FROM hospital WHERE hospital_id=?");
+            pstmt.setString(1, h_id);
             pstmt.executeUpdate();
         }catch(Exception e) {
             e.printStackTrace();
         }
+
+        //discharge patient and make relevent bed free
+        try{
+            Connection con = null;
+            PreparedStatement ststmt = null;
+
+            int patient_id = Integer.parseInt(request.getParameter("patinet_id"));
+            String hospitalId = request.getParameter("hospital_id");
+
+            Doctor doctor = new Doctor();
+            doctor.dischargePatient(patient_id, hospitalId);
+
+            Bed bed = new Bed();
+            bed.removePatient(patient_id);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
+
 }

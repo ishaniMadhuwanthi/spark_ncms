@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class Doctor {
 
-    private int id;
+    private int doctor_id;
     private String name;
     private String hospital_id;
     private boolean is_director;
@@ -18,16 +18,16 @@ public class Doctor {
     public Doctor(){
 
     }
-    public Doctor(int id){
-        this.id=id;
+    public Doctor(int doctor_id){
+        this.doctor_id=doctor_id;
     }
 
-    public int getId() {
-        return id;
+    public int getDoctor_id() {
+        return doctor_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDoctor_id(int doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
     public String getName() {
@@ -58,7 +58,7 @@ public class Doctor {
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.id);
+        jsonObj.addProperty("doctor_id", this.doctor_id);
         jsonObj.addProperty("name", this.name);
         jsonObj.addProperty("hospital_id", this.hospital_id);
         jsonObj.addProperty("is_director", this.is_director);
@@ -73,10 +73,10 @@ public class Doctor {
             PreparedStatement statement;
             ResultSet resultSet;
 
-            statement = con.prepareStatement("SELECT * FROM doctor WHERE id=?");
+            statement = con.prepareStatement("SELECT * FROM doctor WHERE doctor_id=?");
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                this.id = resultSet.getInt("id");
+                this.doctor_id = resultSet.getInt("doctor_id");
                 this.name = resultSet.getString("name");
                 this.hospital_id = resultSet.getString("hospital_id");
                 this.is_director = resultSet.getBoolean("is_director");
@@ -87,5 +87,40 @@ public class Doctor {
         }
     }
 
+    //to discharge a patient
+    public void dischargePatient(int patient_id, String hospital_id) {
 
+        try {
+            Connection con = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            PreparedStatement pstmt = con.prepareStatement("SELECT * FROM doctor WHERE hospital_id='" +hospital_id + "' AND is_director=1");
+            resultSet = pstmt.executeQuery();
+            //System.out.println(pstmt);
+
+            while (resultSet.next()) {
+                int director = resultSet.getInt("doctor_id");
+                System.out.println(director);
+                PreparedStatement stmt = con.prepareStatement("UPDATE patient SET discharge_date=? , discharged_by= '" + director + "' WHERE patient_id = '" + patient_id + "'");
+
+                stmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
+
+                //System.out.println(stmt);
+                int result = stmt.executeUpdate();
+                if(result!=0){
+                    System.out.println("success");
+                }else
+                    System.out.println("Failed");
+            }
+
+            System.out.println("doctor_id: " + doctor_id);
+            System.out.println("Name: " + name);
+            System.out.println("Hospital_id: " + hospital_id);
+            System.out.println("Is Director: " + is_director);
+            System.out.println("doGet doctor success");
+            con.close();
+
+        } catch (Exception exception) {
+
+        }
+    }
 }

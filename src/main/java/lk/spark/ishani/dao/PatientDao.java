@@ -16,8 +16,8 @@ public class PatientDao {
            // UUID uuid = UUID.randomUUID();
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO patient (id, first_name, last_name, contact,address,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by,serial_no) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
-            stmt.setInt(1, patient.getId());
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO patient (patient_id, first_name, last_name, contact,address,district,gender,email,age, x_location, y_location, severity_level, admit_date, admitted_by, discharge_date, discharged_by,serial_no) VALUES (?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
+            stmt.setInt(1, patient.getPatient_id());
            // stmt.setString(1, uuid.toString());
             stmt.setString(2, patient.getFirst_name());
             stmt.setString(3, patient.getLast_name());
