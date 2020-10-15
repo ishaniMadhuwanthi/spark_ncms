@@ -118,8 +118,8 @@ public class Doctor {
             System.out.println("doGet doctor success");
             con.close();
 
-        } catch (Exception exception) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

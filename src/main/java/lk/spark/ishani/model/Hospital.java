@@ -79,7 +79,7 @@ public class Hospital {
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.hospital_id);
+        jsonObj.addProperty("hospital_id", this.hospital_id);
         jsonObj.addProperty("name", this.name);
         jsonObj.addProperty("district", this.district);
         jsonObj.addProperty("x_location", this.x_location);
@@ -174,7 +174,7 @@ public void loadHospitalData() {
             System.out.println(nearestHospital);
             con.close();
         }catch(Exception e){
-
+            e.printStackTrace();
         }
         return nearestHospital;
     }

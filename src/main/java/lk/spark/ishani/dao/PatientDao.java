@@ -43,7 +43,6 @@ public class PatientDao {
                 return "success";//successfully inserted into database
 
         } catch (SQLException e) {
-            // process sql exception
             printSQLException(e);
         }
         return "failed"; // display error msg on failure.

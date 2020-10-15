@@ -29,22 +29,9 @@ public class Patient {
     private int discharged_by;
     private String serial_no;
 
+    public int getPatient_id() { return patient_id; }
 
-    public String getSerial_no() {
-        return serial_no;
-    }
-
-    public void setSerial_no(String serial_no) {
-        this.serial_no = serial_no;
-    }
-
-    public int getPatient_id() {
-        return patient_id;
-    }
-
-    public void setPatient_id(int patient_id) {
-        this.patient_id = patient_id;
-    }
+    public void setPatient_id(int patient_id) { this.patient_id = patient_id; }
 
     public String getFirst_name() {
         return first_name;
@@ -166,7 +153,15 @@ public class Patient {
         this.discharged_by = discharged_by;
     }
 
-    public Patient(int id) {
+    public String getSerial_no() {
+        return serial_no;
+    }
+
+    public void setSerial_no(String serial_no) {
+        this.serial_no = serial_no;
+    }
+
+    public Patient(int patient_id) {
         this.patient_id = patient_id;
     }
     public Patient(){
@@ -177,9 +172,9 @@ public class Patient {
     public JsonObject serialize () {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.patient_id);
+        jsonObj.addProperty("patient_id", this.patient_id);
         jsonObj.addProperty("first_name", this.first_name);
-        jsonObj.addProperty("lastName", this.last_name);
+        jsonObj.addProperty("last_name", this.last_name);
         jsonObj.addProperty("contact", this.contact);
         jsonObj.addProperty("address", this.address);
         jsonObj.addProperty("district", this.district);
@@ -209,7 +204,7 @@ public class Patient {
             //statement.setInt(1, this.id);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                this.patient_id = resultSet.getInt("id");
+                this.patient_id = resultSet.getInt("patient_id");
                 this.first_name = resultSet.getString("first_name");
                 this.last_name = resultSet.getString("last_name");
                 this.contact = resultSet.getString("contact");
@@ -218,8 +213,8 @@ public class Patient {
                 this.gender = resultSet.getString("gender");
                 this.email = resultSet.getString("email");
                 this.age = resultSet.getString("age");
-                this.x_location = resultSet.getInt("location_x");
-                this.y_location = resultSet.getInt("location_y");
+                this.x_location = resultSet.getInt("x_location");
+                this.y_location = resultSet.getInt("y_location");
                 this.severity_level = resultSet.getString("severity_level");
                 this.admit_date = resultSet.getDate("admit_date");
                 this.admitted_by = resultSet.getInt("admitted_by");
@@ -229,7 +224,7 @@ public class Patient {
             }
             connection.close();
         } catch (Exception exception) {
-
+            exception.printStackTrace();
         }
     }
 }

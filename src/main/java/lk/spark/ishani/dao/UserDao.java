@@ -14,12 +14,11 @@ public class UserDao {
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement pstmt = con.prepareStatement("INSERT INTO user (username, password, name, moh, hospital) VALUES (?, ?, ?, ?, ?)");
-            pstmt.setString(1, user.getUsername());
+            PreparedStatement pstmt = con.prepareStatement("INSERT INTO user (email, password, moh, hospital) VALUES (?, ?, ?, ?)");
+            pstmt.setString(1, user.getEmail());
             pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setBoolean(4, user.isMoh());
-            pstmt.setBoolean(5, user.isDoctor());
+            pstmt.setBoolean(3, user.isIsmoh());
+            pstmt.setBoolean(4, user.isIsdoctor());
 
             System.out.println(pstmt);
             int result = pstmt.executeUpdate();
@@ -28,25 +27,10 @@ public class UserDao {
                 return "success";
 
         } catch (SQLException e) {
-            // process sql exception
-
+            e.printStackTrace();
         }
         return "failed";
     }
 
-    private void printSQLException(SQLException ex) {
-        for (Throwable e: ex) {
-            if (e instanceof SQLException) {
-                e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-                System.err.println("Message: " + e.getMessage());
-                Throwable tmsg = ex.getCause();
-                while (tmsg != null) {
-                    System.out.println("Cause: " + tmsg);
-                    tmsg = tmsg.getCause();
-                }
-            }
-        }
-    }
+
 }
