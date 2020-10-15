@@ -97,7 +97,7 @@ public void loadHospitalData() {
         PreparedStatement stmt = con.prepareStatement("SELECT * FROM hospital WHERE hospital_id=? LIMIT 1");
         ResultSet resultSet = stmt.executeQuery();
         while (resultSet.next()) {
-            this.hospital_id = resultSet.getString("id");
+            this.hospital_id = resultSet.getString("hospital_id");
             this.name = resultSet.getString("name");
             this.district = resultSet.getString("district");
             this.x_location = resultSet.getInt("x_location");
@@ -111,13 +111,13 @@ public void loadHospitalData() {
 }
 
 //get available bed count
-//private ArrayList<Bed> beds;
 
     public int getAvailableBedCount(String hospital_id)  {
         try{
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM beds WHERE hospital_id=? and serial_no IS NULL");
+            //view beds which are not allocated for patients
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM beds WHERE hospital_id=? and patient_id IS NULL");
             ResultSet resultSet = stmt.executeQuery();
 
             stmt.setInt(1, Integer.parseInt(hospital_id));
@@ -161,7 +161,7 @@ public void loadHospitalData() {
             resultSet = stmt.executeQuery();
 
             while (resultSet.next()) {
-                String hospital_id = resultSet.getString("id");
+                String hospital_id = resultSet.getString("hospital_id");
                 int hospitalx_location = resultSet.getInt("x_location");
                 int hospitaly_location = resultSet.getInt("y_location");
                 int x_distance = Math.abs(hospitalx_location - x_location);

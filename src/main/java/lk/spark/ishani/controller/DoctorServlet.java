@@ -56,7 +56,8 @@ public class DoctorServlet extends HttpServlet {
 
             Doctor doctor = new Doctor(Integer.parseInt(req.getParameter("doctor_id")));
             doctor.loadDoctorData();
-            System.out.println("loading success");
+
+            System.out.println("doctor loading success");
 
     }
 
@@ -64,7 +65,7 @@ public class DoctorServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        int id = Integer.parseInt(req.getParameter("id"));
+        int doctor_id = Integer.parseInt(req.getParameter("doctor_id"));
         String name = req.getParameter("name");
         String hospital_id = req.getParameter("hospital_id");
         Boolean is_director = Boolean.valueOf(req.getParameter("is_director"));
@@ -72,9 +73,9 @@ public class DoctorServlet extends HttpServlet {
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement pstmt = con.prepareStatement("UPDATE doctor SET  doctor_id=?,name=?, hospital_id=?, is_director=? WHERE id=?");
+            PreparedStatement pstmt = con.prepareStatement("UPDATE doctor SET  doctor_id=?,name=?, hospital_id=?, is_director=? WHERE doctor_id=?");
 
-            pstmt.setInt(1,id);
+            pstmt.setInt(1,doctor_id);
             pstmt.setString(2,name);
             pstmt.setString(3, hospital_id);
             pstmt.setBoolean(4, is_director);

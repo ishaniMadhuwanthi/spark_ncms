@@ -1,6 +1,8 @@
 package lk.spark.ishani.controller;
 
 import lk.spark.ishani.dao.PatientDao;
+import lk.spark.ishani.dao.QueueDao;
+import lk.spark.ishani.database.DBConnectionPool;
 import lk.spark.ishani.model.Bed;
 import lk.spark.ishani.model.Hospital;
 import lk.spark.ishani.model.Patient;
@@ -12,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.Date;
 
 @WebServlet(name = "PatientServlet")
@@ -19,7 +24,7 @@ public class PatientServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        int patient_id = Integer.parseInt(request.getParameter("patient_"));
         String first_name = request.getParameter("first_name");
         String last_name = request.getParameter("last_name");
         String contact = request.getParameter("contact");
@@ -44,7 +49,7 @@ public class PatientServlet extends HttpServlet {
         String serial_no = request.getParameter("serial_no");
 
         Patient patient = new Patient();
-        patient.setPatient_id(id);
+        patient.setPatient_id(patient_id);
         patient.setFirst_name(first_name);
         patient.setLast_name(last_name);
         patient.setContact(contact);
@@ -77,7 +82,6 @@ public class PatientServlet extends HttpServlet {
         try {
             patientDao.regPatient(patient);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -86,9 +90,9 @@ public class PatientServlet extends HttpServlet {
     //view patient details
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
-        Patient patient = new Patient(Integer.parseInt(request.getParameter("id")));
+        Patient patient = new Patient(Integer.parseInt(request.getParameter("patient_id")));
         patient.loadPatientData();
-        System.out.println("Loading Success");
+        System.out.println("patient loading Success");
 
         Hospital hospital = new Hospital();
         String nearestHospital = hospital.getDistance(patient.getX_location(),patient.getY_location());
@@ -98,9 +102,37 @@ public class PatientServlet extends HttpServlet {
         writer.flush();
 
         Bed bed =new Bed();
-        int selectedBed=bed.assignBed(patient.getSerial_no(),hospital.getHospital_id());
-        writer.write(selectedBed);
-        writer.flush();
+        int selectedBed=bed.assignBed(nearestHospital, bed.getBed_id());
+//        writer.write(selectedBed);
+//        writer.flush();
+
+        try {
+            Connection con = DBConnectionPool.getInstance().getConnection();
+
+            if (selectedBed == 0) {
+                PreparedStatement stmt = con.prepareStatement("SELECT distinct hospital_id FROM hospital where hospital_id !='" + nearestHospital + "'");
+                ResultSet resultSet= stmt.executeQuery();
+                String h_id="";
+
+                //to assign a bed for patient
+                while(resultSet.next()){
+                    if(selectedBed ==0){
+                        h_id = resultSet.getString("hospital_id");
+                        selectedBed = bed.assignBed(h_id, patient.getPatient_id());
+                    }
+                }
+
+                //add patient to queue
+                Hospital hospitalObj=new Hospital();
+                int freeBeds=hospitalObj.getAvailableBedCount(h_id);
+                if(freeBeds ==0){
+                    QueueDao queue= new QueueDao();
+                   int length=queue.addToQueue(patient.getPatient_id());
+                }
+            }
+        }catch(Exception e){
+           e.printStackTrace();
+        }
     }
 
 }

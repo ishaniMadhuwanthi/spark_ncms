@@ -6,6 +6,9 @@ import lk.spark.ishani.database.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Bed {
 
@@ -13,19 +16,12 @@ public class Bed {
     private int bed_id;
     private int patient_id;
     private  String hospital_id;
-    private String serial_no;
+
 
     public Bed(){
 
     }
 
-    public String getSerial_no() {
-        return serial_no;
-    }
-
-    public void setSerial_no(String serial_no) {
-        this.serial_no = serial_no;
-    }
 
     public int getBed_id() {
         return bed_id;
@@ -61,7 +57,7 @@ public class Bed {
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("id", this.bed_id);
+        jsonObj.addProperty("bed_id", this.bed_id);
         jsonObj.addProperty("hospital_id", this.patient_id);
         jsonObj.addProperty("serial_no", this.hospital_id);
 
@@ -86,42 +82,91 @@ public class Bed {
     }
 
     //assign bed for patient
-    public int assignBed(String serial_no, String hospital_id){
+    public int assignBed(String hospital_id, int patient_id){
         Hospital hospitalObj=new Hospital();
         int availableBeds=hospitalObj.getAvailableBedCount(hospital_id);
-        setSerial_no(serial_no);
         setPatient_id(patient_id);
+        setHospital_id(hospital_id);
         int []bed= new int[availableBeds];
+        int bed_id=0;
+        int bedCount=0;
 
         try{
-            for(int i=0;i<availableBeds;i++){
+            Connection con = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            PreparedStatement stmt1 = con.prepareStatement("SELECT * FROM beds where hospital_id= '" + getHospital_id() + "'");
+            System.out.println(stmt1);
+            resultSet = stmt1.executeQuery();
 
-                Connection con= DBConnectionPool.getInstance().getConnection();
-
-                PreparedStatement stmt = con.prepareStatement("INSERT INTO beds (patient_id,serial_no) VALUES (patient_id,serial_no)");
-                ResultSet resultSet = stmt.executeQuery();
-                while(resultSet.next()){
-                    int bed_id = resultSet.getInt("bed_id");
-                    bed[bed_id-1]=bed_id;
-                }
-                con.close();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                bed[id-1]=id;
             }
-
-        }catch(Exception e){
-
+            for(int i=0; i< availableBeds; i++){
+                if(bed[i]==0){
+                    bed_id = i+1;
+                    bedCount = bed_id;
+                    break;
+                }
+            }
+            if(bed_id!=0) {
+                PreparedStatement stmt2 = con.prepareStatement("INSERT INTO beds (bed_id, hospital_id, patient_id) VALUES (" + bed_id + ",'" + hospital_id + "','" + patient_id + "')");
+                System.out.println(stmt2);
+                int result = stmt2.executeUpdate();
+            }
+            con.close();
+            } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+
+
         return bed_id;
     }
 
-    //when discharge a patient have to remove patient and delete bed+id that is assigned for the patient
+    //when discharge a patient have to remove patient and delete bed_id that is assigned for the patient
     public void removePatient(int patient_id) {
 
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
 
-            PreparedStatement stmt= con.prepareStatement("DELETE FROM beds WHERE patient_id='"+patient_id+"'");
-            System.out.println(stmt);
-            int result = stmt.executeUpdate();
+            Map<Integer,String> queue = new HashMap<Integer,String>();
+
+            //view patients who has beds
+            PreparedStatement stmt1 = con.prepareStatement("DELETE FROM beds WHERE patient_id='"+patient_id+"'");
+            System.out.println(stmt1);
+            int result1 = stmt1.executeUpdate();
+
+            //view patient_queue details
+            PreparedStatement stmt2 = con.prepareStatement("SELECT * FROM patient_queue ORDER BY id ASC");
+            System.out.println(stmt2);
+            ResultSet resultSet1 = stmt2.executeQuery();
+
+            if (resultSet1.next()) {
+                int id = resultSet1.getInt("id");
+                int patientid = resultSet1.getInt("patient_id");
+                String hospitalid = resultSet1.getString("hospital_id");
+                assignBed(hospitalid, patientid);
+
+                //delete patient from queue
+                PreparedStatement stmt3 = con.prepareStatement("DELETE FROM patient_queue where patient_id = '"+patientid+"'");
+                System.out.println(stmt3);
+                int result2 = stmt3.executeUpdate();
+
+                //again view remain patient details in the queue
+                PreparedStatement stmt4 = con.prepareStatement("SELECT * FROM patient_queue ORDER BY id ASC");
+                System.out.println(stmt4);
+                ResultSet resultSet2 = stmt4.executeQuery();
+
+                //update queue according to patient adding and removing
+                while(resultSet2.next()) {
+                    int current_id = resultSet2.getInt("id");
+                    int next_id = current_id-1;
+                    System.out.println(next_id);
+                    PreparedStatement stmt5 = con.prepareStatement("UPDATE patient_queue SET id=" + next_id + " Where id="+ current_id);
+                    System.out.println(stmt5);
+                    stmt5.executeUpdate();
+                }
+            }
 
             con.close();
 

@@ -17,18 +17,18 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String username = req.getParameter("username");
+        String email = req.getParameter("email");
         String password = req.getParameter("password");
-        String name = req.getParameter("name");
-        Boolean moh = Boolean.valueOf(req.getParameter("moh"));
-        Boolean doctor = Boolean.valueOf(req.getParameter("hospital"));
+        Boolean ismoh = Boolean.valueOf(req.getParameter("ismoh"));
+        Boolean isdoctor = Boolean.valueOf(req.getParameter("isdoctor"));
+        Boolean ispatient = Boolean.valueOf(req.getParameter("ispatient"));
 
         User user = new User();
-        user.setUsername(username);
+        user.setEmail(email);
         user.setPassword(password);
-        user.setName(name);
-        user.setMoh(moh);
-        user.setDoctor(doctor);
+        user.setIsmoh(ismoh);
+        user.setIsdoctor(isdoctor);
+        user.setIspatient(ispatient);
 
         UserDao userDao = new UserDao();
         String userRegistered = userDao.regUser(user);
@@ -53,8 +53,8 @@ public class UserServlet extends HttpServlet {
     //view user details
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = new User(req.getParameter("username"));
+        User user = new User(req.getParameter("email"));
         user.loadUserData();
-        System.out.println("loading success");
+        System.out.println("user loading success");
     }
 }

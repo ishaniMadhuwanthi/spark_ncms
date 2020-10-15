@@ -81,6 +81,7 @@ public class Doctor {
                 this.hospital_id = resultSet.getString("hospital_id");
                 this.is_director = resultSet.getBoolean("is_director");
             }
+
             con.close();
         }catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -92,10 +93,8 @@ public class Doctor {
 
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
-            ResultSet resultSet;
             PreparedStatement pstmt = con.prepareStatement("SELECT * FROM doctor WHERE hospital_id='" +hospital_id + "' AND is_director=1");
-            resultSet = pstmt.executeQuery();
-            //System.out.println(pstmt);
+            ResultSet resultSet = pstmt.executeQuery();
 
             while (resultSet.next()) {
                 int director = resultSet.getInt("doctor_id");
@@ -104,18 +103,18 @@ public class Doctor {
 
                 stmt.setDate(1, new java.sql.Date(new java.util.Date().getTime()));
 
-                //System.out.println(stmt);
                 int result = stmt.executeUpdate();
-                if(result!=0){
+
+                if(result !=0){
                     System.out.println("success");
                 }else
                     System.out.println("Failed");
             }
 
-            System.out.println("doctor_id: " + doctor_id);
-            System.out.println("Name: " + name);
-            System.out.println("Hospital_id: " + hospital_id);
-            System.out.println("Is Director: " + is_director);
+            System.out.println("doctor id: " + doctor_id);
+            System.out.println("name: " + name);
+            System.out.println("hospital id: " + hospital_id);
+            System.out.println("is director: " + is_director);
             System.out.println("doGet doctor success");
             con.close();
 

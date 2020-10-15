@@ -9,36 +9,51 @@ import java.sql.ResultSet;
 
 public class User {
 
-    private String username;
+    private String email;
     private String password;
-    private String name;
-    private boolean moh;
-    private boolean doctor;
-    private boolean patient;
-
-    public boolean isPatient() {
-        return patient;
-    }
-
-    public void setPatient(boolean patient) {
-        this.patient = patient;
-    }
-
-    public User(String username){
-        this.username=username;
-    }
+    private boolean ismoh;
+    private boolean isdoctor;
+    private boolean ispatient;
 
     public User(){
 
     }
-
-    public String getUsername() {
-        return username;
+    public User(String email){
+        this.email=email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getEmail() {
+        return email;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isIsmoh() {
+        return ismoh;
+    }
+
+    public void setIsmoh(boolean ismoh) {
+        this.ismoh = ismoh;
+    }
+
+    public boolean isIsdoctor() {
+        return isdoctor;
+    }
+
+    public void setIsdoctor(boolean isdoctor) {
+        this.isdoctor = isdoctor;
+    }
+
+    public boolean isIspatient() {
+        return ispatient;
+    }
+
+    public void setIspatient(boolean ispatient) {
+        this.ispatient = ispatient;
+    }
+
 
     public String getPassword() {
         return password;
@@ -48,59 +63,36 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isMoh() {
-        return moh;
-    }
-
-    public void setMoh(boolean moh) {
-        this.moh = moh;
-    }
-
-    public boolean isDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(boolean doctor) {
-        this.doctor = doctor;
-    }
-
     //serialize data into json object
     public JsonObject serialize() {
         JsonObject jsonObj = new JsonObject();
 
-        jsonObj.addProperty("username", this.username);
+        jsonObj.addProperty("email", this.email);
         jsonObj.addProperty("password", this.password);
-        jsonObj.addProperty("name", this.name);
-        jsonObj.addProperty("moh", this.moh);
-        jsonObj.addProperty("doctor", this.doctor);
-        jsonObj.addProperty("patient",this.patient);
+        jsonObj.addProperty("ismoh", this.ismoh);
+        jsonObj.addProperty("isdoctor", this.isdoctor);
+        jsonObj.addProperty("ispatient",this.ispatient);
 
         return jsonObj;
     }
 
+
+
+    //load user data
     public void loadUserData() {
         try {
             Connection con = DBConnectionPool.getInstance().getConnection();
             PreparedStatement stmt;
             ResultSet resultSet;
 
-            stmt = con.prepareStatement("SELECT * FROM user WHERE username=?");
+            stmt = con.prepareStatement("SELECT * FROM user WHERE email=?");
             resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                this.username = resultSet.getString("username");
+                this.email = resultSet.getString("email");
                 this.password = resultSet.getString("password");
-                this.name = resultSet.getString("name");
-                this.moh = resultSet.getBoolean("moh");
-                this.doctor = resultSet.getBoolean("doctor");
-                this.patient = resultSet.getBoolean("patient");
+                this.ismoh = resultSet.getBoolean("ismoh");
+                this.isdoctor = resultSet.getBoolean("isdoctor");
+                this.ispatient = resultSet.getBoolean("ispatient");
             }
             con.close();
         } catch (Exception exception) {

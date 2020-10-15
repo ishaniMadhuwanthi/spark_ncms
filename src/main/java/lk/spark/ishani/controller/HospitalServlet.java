@@ -22,9 +22,9 @@ public class HospitalServlet extends HttpServlet {
     //view hospital details
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Hospital hospital = new Hospital(request.getParameter("id"));
+        Hospital hospital = new Hospital(request.getParameter("hospital_id"));
         hospital.loadHospitalData();
-        System.out.println("Loading success");
+        System.out.println("hospital Loading success");
 //        PrintWriter writer = new PrintWriter(System.out);
 //        writer.write("hello doctor");
 //        writer.flush();
@@ -34,7 +34,7 @@ public class HospitalServlet extends HttpServlet {
     //insert(build) new hospital
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
+        String hospital_id = request.getParameter("hospital_id");
         String name = request.getParameter("name");
         String district = request.getParameter("district");
         int x_location = Integer.parseInt(request.getParameter("x_location"));
@@ -43,7 +43,7 @@ public class HospitalServlet extends HttpServlet {
         Date build_date = new Date(date_build.getTime());
 
         Hospital hospital = new Hospital();
-        hospital.setHospital_id(id);
+        hospital.setHospital_id(hospital_id);
         hospital.setName(name);
         hospital.setDistrict(district);
         hospital.setX_location(x_location);
@@ -65,7 +65,6 @@ public class HospitalServlet extends HttpServlet {
         try {
             hospitalDao.regHospital(hospital);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -74,7 +73,7 @@ public class HospitalServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String id = request.getParameter("id");
+        String hospital_id = request.getParameter("hospital_id");
         String name = request.getParameter("name");
         String district = request.getParameter("district");
         int x_location = Integer.parseInt(request.getParameter("x_location"));
@@ -89,7 +88,7 @@ public class HospitalServlet extends HttpServlet {
 
             pstmt = con.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, x_location=?,y_location=?,build_date=? WHERE hospital_id=?");
 
-            pstmt.setString(1,id);
+            pstmt.setString(1,hospital_id);
             pstmt.setString(2,name);
             pstmt.setString(3, district);
             pstmt.setInt(4, x_location);
@@ -105,7 +104,21 @@ public class HospitalServlet extends HttpServlet {
                 System.out.println("Update failed");//update process failed
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
+        }
+
+        //discharge patient and make relevent bed free and updatev hospital availabilities
+        try{
+            int patient_id = Integer.parseInt(request.getParameter("patient_id"));
+
+            Doctor doctor = new Doctor();
+            doctor.dischargePatient(patient_id, hospital_id);
+
+            Bed bed = new Bed();
+            bed.removePatient(patient_id);
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -126,22 +139,7 @@ public class HospitalServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        //discharge patient and make relevent bed free
-        try{
-            Connection con = null;
-            PreparedStatement ststmt = null;
 
-            int patient_id = Integer.parseInt(request.getParameter("patinet_id"));
-            String hospitalId = request.getParameter("hospital_id");
-
-            Doctor doctor = new Doctor();
-            doctor.dischargePatient(patient_id, hospitalId);
-
-            Bed bed = new Bed();
-            bed.removePatient(patient_id);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
 }
