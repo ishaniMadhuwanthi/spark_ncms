@@ -5,23 +5,67 @@
          version="4.0">
     <display-name>NCMS</display-name>
 
+<!--    servlets-->
     <servlet>
         <servlet-name>PatientServlet</servlet-name>
-        <servlet-class>lk.spark.ishani.controller.PatientServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>HospitalServlet</servlet-name>
-        <servlet-class>lk.spark.ishani.controller.HospitalServlet</servlet-class>
+        <servlet-class>lk.spark.ishani.ncms.controller.PatientServlet</servlet-class>
     </servlet>
 
-    /*servlet mapping*/
+    <servlet>
+        <servlet-name>DoctorServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.DoctorServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>HospitalServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.HospitalServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>UserServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.UserServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.StatisticsServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>HospitalListServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.HospitalListServlet</servlet-class>
+    </servlet>
+
+
+    <!--    servlet mappings-->
     <servlet-mapping>
         <servlet-name>PatientServlet</servlet-name>
-        <url-pattern>/patient</url-pattern>
+        <url-pattern>/patientRegister</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DoctorServlet</servlet-name>
+        <url-pattern>/doctorRegister</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>HospitalServlet</servlet-name>
-        <url-pattern>/hospital</url-pattern>
+        <url-pattern>/hospitalRegister</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UserServlet</servlet-name>
+        <url-pattern>/userServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <url-pattern>/Statistics</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>HospitalListServlet</servlet-name>
+        <url-pattern>/HospitalList</url-pattern>
     </servlet-mapping>
 
 </web-app>
