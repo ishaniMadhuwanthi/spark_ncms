@@ -50,6 +50,37 @@ public class Doctor implements Serializable {
         this.is_director = is_director;
     }
 
+    public Doctor(String doctor_id) {
+        this.doctor_id = doctor_id;
+    }
+
+    public Doctor() {
+
+    }
+
+    public void getModel() {
+        try {
+            Connection connection = DBConnectionPool.getInstance().getConnection();
+            PreparedStatement statement;
+            ResultSet resultSet;
+
+            statement = connection.prepareStatement("SELECT * FROM doctor WHERE doctor_id=?");
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                this.doctor_id = resultSet.getString("doctor_id");
+                this.name = resultSet.getString("name");
+                this.email = resultSet.getString("email");
+                this.hospital_id = resultSet.getString("hospital_id");
+                this.is_director= resultSet.getBoolean("is_director");
+            }
+
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+    }
+
     public void dischargePatients(String patient_id, String hospital_id) {
         Connection connection = null;
         PreparedStatement statement = null;

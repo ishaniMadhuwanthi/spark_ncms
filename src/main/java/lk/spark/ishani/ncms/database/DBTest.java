@@ -16,7 +16,7 @@ public class DBTest
             UUID uuid = UUID.randomUUID();
 
             con = DBConnectionPool.getInstance().getConnection();
-            stmt = con.prepareStatement("INSERT INTO hospital (hospital_id, name, district, x_location, y_location, build_date) VALUES (?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO hospital (hospital_id, name, district, x_location, y_location) VALUES (?,?,?,?,?)");
             stmt.setString(1, uuid.toString());
             stmt.setString(2, "hos3");
             stmt.setString(3, "dis3");

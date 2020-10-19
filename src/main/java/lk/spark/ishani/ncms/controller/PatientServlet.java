@@ -62,7 +62,6 @@ public class PatientServlet extends HttpServlet {
         try {
             patientDao.registerPatient(patient);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
