@@ -51,10 +51,8 @@ public class HospitalListServlet extends HttpServlet {
             }
             System.out.println(hospitals) ;
 
-
-//            PrintWriter printWriter = resp.getWriter();
-//            printWriter.println(hospitals);
-
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(hospitals.toString());
 
             connection.close();
         } catch (Exception e) {

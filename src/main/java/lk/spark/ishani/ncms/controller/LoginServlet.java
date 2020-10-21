@@ -1,6 +1,7 @@
 package lk.spark.ishani.ncms.controller;
 
 import com.google.gson.JsonArray;
+import lk.spark.ishani.ncms.dao.DoctorDao;
 import lk.spark.ishani.ncms.database.DBConnectionPool;
 import lk.spark.ishani.ncms.models.Doctor;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,60 +21,35 @@ import java.util.Base64;
 public class LoginServlet extends HttpServlet {
 
     /*
-    ------------login control----------------
+    ------------doctor login control----------------
      */
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JsonArray errorArray;
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String password=req.getParameter("doctor_id");
+        String password = req.getParameter("doctor_id");
         String email = req.getParameter("email");
 
-        //String encoded_password = Base64.getEncoder().encodeToString(req.getParameter("doctor_id").getBytes());
+        Doctor doctor = new Doctor();
+        doctor.setDoctor_id(password);
+        doctor.setEmail(email);
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-        int result = 0;
-
-        try {
-            connection = DBConnectionPool.getInstance().getConnection();
-            ResultSet resultSet;
-
-            statement = connection.prepareStatement("SELECT Count(*) AS count FROM doctor WHERE doctor_id ='" + password + "' and email ='" + email + "'");
-            System.out.println(statement);
-
-            statement.setString(1, password);
-            statement.setString(2, email);
-
-            resultSet = statement.executeQuery();
+        DoctorDao doctorDao = new DoctorDao();
+        String doctorLogin = doctorDao.loginDoctor(doctor);
 
 
-                int count=0;
-                while (resultSet.next()) {
-                    count = resultSet.getInt("count");
-                }
-                System.out.println(count);
-            if (count == 1) {
+        if (doctorLogin.equals("SUCCESS")) {
+            System.out.println("Success");
 
-                Doctor doctor = new Doctor(password);
-                doctor.getModel();
+            Doctor doctor2 = new Doctor(password);
+            doctor2.getModel();
 
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(doctor2.toString());
 
-            } else {
-                errorArray = new JsonArray();
-                errorArray.add("Email or Password is wrong");
-
-
-            }
-
-            connection.close();
-        } catch (Exception e) {
-            errorArray = new JsonArray();
-            errorArray.add("Database connection failed");
-
-           }
+        } else {
+            System.out.println("Failed");
+        }
     }
 }
-
 

@@ -16,10 +16,14 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @WebServlet(name = "DoctorServlet")
 public class DoctorServlet extends HttpServlet {
 
+    /*
+    -----------insert doctor---------------
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String doctor_id = request.getParameter("doctor_id");
@@ -53,6 +57,10 @@ public class DoctorServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    /*
+    --------------view doctor details--------------
+     */
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -113,4 +121,57 @@ public class DoctorServlet extends HttpServlet {
 
         }
     }
+
+    /*
+    ------------delete doctor-------
+     */
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try{
+            Connection con = DBConnectionPool.getInstance().getConnection();
+
+            String doctor_id = req.getParameter("doctor_id");
+
+            PreparedStatement pstmt = con.prepareStatement("DELETE FROM doctor WHERE doctor_id=?");
+            pstmt.setString(1, doctor_id);
+            pstmt.executeUpdate();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    ------------update doctor details--------------
+     */
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        try {
+            String doctor_id = req.getParameter("doctor_id");
+            String name = req.getParameter("name");
+            String hospital_id = req.getParameter("hospital_id");
+            Boolean is_director = Boolean.valueOf(req.getParameter("is_director"));
+
+            Connection con = DBConnectionPool.getInstance().getConnection();
+
+            PreparedStatement pstmt = con.prepareStatement("UPDATE doctor SET  doctor_id=?,name=?, hospital_id=?, is_director=? WHERE doctor_id=?");
+
+            pstmt.setString(1,doctor_id);
+            pstmt.setString(2,name);
+            pstmt.setString(3, hospital_id);
+            pstmt.setBoolean(4, is_director);
+
+            con.close();
+
+            int result = pstmt.executeUpdate();
+            if (result != 0){
+                System.out.println("Successfully updated");//updated successfully
+            }else{
+                System.out.println("Update failed");//update process failed
+            }
+        } catch( SQLException ex){
+            ex.printStackTrace();
+        }
+    }
+
 }

@@ -9,45 +9,35 @@ import java.sql.ResultSet;
 
 public class User {
     private String email;
-    private String password;
-    private boolean isMoh;
-    private boolean isHospital;
+    private String moh_id;
+    private String name;
 
     public String getEmail() { return email; }
 
     public void setEmail(String email) { this.email = email; }
 
-    public String getPassword() {
-        return password;
+    public String getMoh_id() { return moh_id; }
+
+    public void setMoh_id(String moh_id) { this.moh_id = moh_id; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public User(String moh_id) {
+        this.moh_id = moh_id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public User(){
 
-    public boolean isMoh() {
-        return isMoh;
-    }
-
-    public void setMoh(boolean moh) {
-        isMoh = moh;
-    }
-
-    public boolean isHospital() {
-        return isHospital;
-    }
-
-    public void setHospital(boolean hospital) {
-        isHospital = hospital;
     }
 
     public JsonObject serialize() {
         JsonObject data = new JsonObject();
 
         data.addProperty("email", this.email);
-        data.addProperty("password", this.password);
-        data.addProperty("isMoh", this.isMoh);
-        data.addProperty("isHospital", this.isHospital);
+        data.addProperty("moh_id", this.moh_id);
+        data.addProperty("name", this.name);
 
         return data;
     }
@@ -62,9 +52,8 @@ public class User {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 this.email = resultSet.getString("email");
-                this.password = resultSet.getString("password");
-                this.isMoh = resultSet.getBoolean("isMoh");
-                this.isHospital = resultSet.getBoolean("isHospital");
+                this.moh_id = resultSet.getString("moh_id");
+                this.name = resultSet.getString("name");
             }
 
             connection.close();

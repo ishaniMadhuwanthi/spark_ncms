@@ -25,9 +25,6 @@ public class DoctorListServlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        JsonArray errorArray;
-
-        errorArray = new JsonArray();
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -40,24 +37,27 @@ public class DoctorListServlet  extends HttpServlet {
             JsonArray doctors = new JsonArray();
 
             statement = connection.prepareStatement("SELECT * FROM doctor");
+            System.out.println(statement);
             resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 JsonObject doctor = new JsonObject();
                 doctor.addProperty("doctor_id", resultSet.getString("doctor_id"));
                 doctor.addProperty("name", resultSet.getString("name"));
                 doctor.addProperty("email", resultSet.getString("email"));
-                doctor.addProperty("hospital_id", resultSet.getInt("hospital_id"));
-                doctor.addProperty("is_director", resultSet.getInt("is_director"));
+                doctor.addProperty("hospital_id", resultSet.getString("hospital_id"));
+                doctor.addProperty("is_director", resultSet.getBoolean("is_director"));
                 doctors.add(doctor);
 
             }
             System.out.println(doctors) ;
+
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(doctors.toString());
+
             connection.close();
-        } catch (Exception exception) {
-            errorArray = new JsonArray();
-            errorArray.add("Database connection failed");
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -75,7 +75,7 @@ public class Hospital {
         return data;
     }
 
-    public String assignHospital(int patientLocationX, int patientLocationY) {
+    public String assignHospital(String patientLocationX, String patientLocationY) {
         Connection connection = null;
         PreparedStatement statement = null;
         Map<String, Double> distance = new HashMap<String, Double>();

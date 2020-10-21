@@ -2,6 +2,7 @@ package lk.spark.ishani.ncms.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import lk.spark.ishani.ncms.database.DBConnectionPool;
@@ -18,7 +19,6 @@ public class DoctorDao {
         try {
             connection = DBConnectionPool.getInstance().getConnection();
 
-            // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
             preparedStatement.setString(1, doctor.getDoctor_id());
             preparedStatement.setString(2, doctor.getName());
@@ -27,17 +27,49 @@ public class DoctorDao {
             preparedStatement.setBoolean(5, doctor.isIs_director());
 
             System.out.println(preparedStatement);
-            // Step 3: Execute the query or update query
             result = preparedStatement.executeUpdate();
 
-            if (result != 0)  //Just to ensure data has been inserted into the database
+            if (result != 0)
                 return "SUCCESS";
 
         } catch (SQLException e) {
-            // process sql exception
             printSQLException(e);
         }
-        return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
+        return "Oops.. Something went wrong there..!";
+    }
+
+
+    public String loginDoctor(Doctor doctor) {
+        String INSERT_USERS_SQL = "SELECT Count(*) AS count FROM doctor WHERE doctor_id ='" + doctor.getDoctor_id() + "' and email ='" + doctor.getEmail() + "'";
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+
+            preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
+            System.out.println(preparedStatement);
+            resultSet = preparedStatement.executeQuery();
+
+            int x=0;
+            while (resultSet.next()) {
+                int id_count=resultSet.getInt("count");
+                System.out.println(id_count);
+
+            }x=x+1;
+
+
+
+            if (x == 1)
+                return "SUCCESS";
+
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return "something wrong!";
     }
 
     private void printSQLException(SQLException ex) {

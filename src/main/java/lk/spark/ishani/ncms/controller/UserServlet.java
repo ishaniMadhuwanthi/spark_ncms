@@ -13,18 +13,20 @@ import java.io.IOException;
 @WebServlet(name = "UserServlet")
 public class UserServlet extends HttpServlet {
 
+    /*
+    ------------add moh officer------------
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        Boolean moh = Boolean.valueOf(request.getParameter("moh"));
-        Boolean hospital = Boolean.valueOf(request.getParameter("hospital"));
+        String moh_id = request.getParameter("moh_id");
+        String name = request.getParameter("name");
+
 
         User user = new User();
         user.setEmail(email);
-        user.setPassword(password);
-        user.setMoh(moh);
-        user.setHospital(hospital);
+        user.setMoh_id(moh_id);
+        user.setName(name);
 
         UserDao userDao = new UserDao();
         String userRegistered = userDao.viewStatistics(user);

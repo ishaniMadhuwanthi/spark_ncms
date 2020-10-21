@@ -1,5 +1,6 @@
 package lk.spark.ishani.ncms.controller;
 
+import com.google.gson.JsonObject;
 import lk.spark.ishani.ncms.database.DBConnectionPool;
 import lk.spark.ishani.ncms.dao.PatientDao;
 import lk.spark.ishani.ncms.dao.QueueDao;
@@ -67,6 +68,10 @@ public class PatientServlet extends HttpServlet {
 
     }
 
+    /*
+    ----------------view patient details
+     */
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String patient_id = request.getParameter("patient_id");
@@ -87,26 +92,39 @@ public class PatientServlet extends HttpServlet {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
+                patient_id = resultSet.getString("patient_id");
                 String first_name = resultSet.getString("first_name");
                 String last_name = resultSet.getString("last_name");
                 String contact = resultSet.getString("contact");
                 String district = resultSet.getString("district");
                 String email = resultSet.getString("email");
-                int age = resultSet.getInt("age");
-                int x_location = resultSet.getInt("location_x");
-                int y_location = resultSet.getInt("location_y");
+                String age = resultSet.getString("age");
+                String x_location = resultSet.getString("x_location");
+                String y_location = resultSet.getString("y_location");
 
                 PrintWriter printWriter = response.getWriter();
 
-                printWriter.println("Id: " + patient_id);
-                printWriter.println("First name: " + first_name);
-                printWriter.println("Last name: " + last_name);
-                printWriter.println("Contact: " + contact);
-                printWriter.println("District: " + district);
-                printWriter.println("Email: " + email);
-                printWriter.println("Age: " + age);
-                printWriter.println("Location_X: " + x_location);
-                printWriter.println("Location_Y: " + y_location);
+//                printWriter.println(patient_id);
+//                printWriter.println(first_name);
+//                printWriter.println(last_name);
+//                printWriter.println(contact);
+//                printWriter.println(district);
+//                printWriter.println(email);
+//                printWriter.println(age);
+//                printWriter.println(x_location);
+//                printWriter.println(y_location);
+
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("patient_id", patient_id);
+                jsonObject.addProperty("first_name", first_name);
+                jsonObject.addProperty("last_name", last_name);
+                jsonObject.addProperty("contact", contact);
+                jsonObject.addProperty("district", district);
+                jsonObject.addProperty("email", email);
+                jsonObject.addProperty("age", age);
+                jsonObject.addProperty("x_location", x_location);
+                jsonObject.addProperty("y_location", y_location);
+                printWriter.print(jsonObject.toString());
 
                 System.out.println("doGet patient success");
 

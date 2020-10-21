@@ -1,5 +1,6 @@
 package lk.spark.ishani.ncms.controller;
 
+import com.google.gson.JsonObject;
 import lk.spark.ishani.ncms.models.Hospital;
 import lk.spark.ishani.ncms.database.DBConnectionPool;
 import lk.spark.ishani.ncms.dao.HospitalDao;
@@ -22,6 +23,10 @@ import java.sql.ResultSet;
 @WebServlet(name = "HospitalServlet")
 public class HospitalServlet extends HttpServlet {
 
+
+    /*
+    ------------insert hospital-------------
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -62,10 +67,14 @@ public class HospitalServlet extends HttpServlet {
         try {
             hospitalDao.registerHospital(hospital);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
+
+
+     /*
+    ------------view hospital-------------
+     */
 
 @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -93,11 +102,19 @@ public class HospitalServlet extends HttpServlet {
 
                 PrintWriter printWriter = response.getWriter();
 
-                printWriter.println("Id: " + hospital_id);
-                printWriter.println("Name: " + name);
-                printWriter.println("District: " + district);
-                printWriter.println("Location_X: " + x_location);
-                printWriter.println("Location_Y: " + y_location);
+//                printWriter.println( hospital_id);
+//                printWriter.println( name);
+//                printWriter.println( district);
+//                printWriter.println(x_location);
+//                printWriter.println( y_location);
+
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("hospital_id", hospital_id);
+                jsonObject.addProperty("name", name);
+                jsonObject.addProperty("district", district);
+                jsonObject.addProperty("x_location", x_location);
+                jsonObject.addProperty("y_location", y_location);
+                printWriter.print(jsonObject.toString());
 
                 System.out.println("doGet hospital success");
 
@@ -109,14 +126,30 @@ public class HospitalServlet extends HttpServlet {
         }
     }
 
-    /* Discharge patient by director and make the bed available for other patients */
+    /* Discharge patient by director and make the bed available for other patients
+    * ---------delete hospital--------------
+    * */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Connection connection = null;
         PreparedStatement statement = null;
 
+        try{
+            connection = DBConnectionPool.getInstance().getConnection();
+
+            String hospital_id = request.getParameter("hospital_id");
+
+            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM hospital WHERE hospital_id=?");
+            pstmt.setString(1, hospital_id);
+            pstmt.executeUpdate();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+
         String patient_id = request.getParameter("patient_id");
         String hospital_id = request.getParameter("hospital_id");
+
+        Hospital hospital=new Hospital();
 
         Doctor doctor = new Doctor();
         doctor.dischargePatients(patient_id, hospital_id);
@@ -125,6 +158,68 @@ public class HospitalServlet extends HttpServlet {
         bed.makeAvailable(patient_id, hospital_id);
     }
 
+
+    /*
+    --------------update hospital-------------
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String hospital_id = request.getParameter("hospital_id");
+        String name = request.getParameter("name");
+        String district = request.getParameter("district");
+        String x_location = request.getParameter("x_location");
+        String y_location = request.getParameter("y_location");
+
+        try {
+            Connection connection = DBConnectionPool.getInstance().getConnection();
+            PreparedStatement statement=null;
+            int result=0;
+
+            statement = connection.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, x_location=?,y_location=? WHERE hospital_id=?");
+            ResultSet resultSet;
+
+            statement.setString(1,hospital_id);
+            statement.setString(2,name);
+            statement.setString(3, district);
+            statement.setString(4, x_location);
+            statement.setString(5, y_location);
+            result = statement.executeUpdate();
+
+            connection.close();
+            PrintWriter printWriter = response.getWriter();
+
+            JsonObject dataObject = new JsonObject();
+            dataObject.addProperty("hospital_id", hospital_id);
+            dataObject.addProperty("name", name);
+            dataObject.addProperty("district", district);
+            dataObject.addProperty("x_location", x_location);
+            dataObject.addProperty("y_location", y_location);
+            printWriter.print(dataObject.toString());
+
+
+
+            printWriter.println(hospital_id);
+            printWriter.println(name);
+            printWriter.println(district);
+            printWriter.println(x_location);
+            printWriter.println(y_location);
+
+
+            System.out.println("update success");
+
+
+//            result = statement.executeUpdate();
+            if (result != 0){
+                System.out.println("Successfully updated");//updated successfully
+            }else{
+                System.out.println("Update failed");//update process failed
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 
 }

@@ -2,6 +2,7 @@ package lk.spark.ishani.ncms.models;
 
 import lk.spark.ishani.ncms.database.DBConnectionPool;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,6 +58,7 @@ public class Doctor implements Serializable {
     public Doctor() {
 
     }
+
 
     public void getModel() {
         try {

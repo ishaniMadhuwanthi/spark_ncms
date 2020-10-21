@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,10 +51,13 @@ public class PatientListServlet extends HttpServlet {
                 patient.addProperty("y_location", resultSet.getString("y_location"));
 //                hospital.addProperty("patient_count", resultSet.getInt("patient_count"));
                 patients.add(patient);
-
             }
 
             System.out.println(patients) ;
+
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(patients.toString());
+
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
