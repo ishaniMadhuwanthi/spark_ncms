@@ -3,9 +3,7 @@ package lk.spark.ishani.ncms.dao;
 import lk.spark.ishani.ncms.database.DBConnectionPool;
 import lk.spark.ishani.ncms.models.Patient;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class PatientDao {
     public String registerPatient(Patient patient) {
@@ -32,17 +30,20 @@ public class PatientDao {
             preparedStatement.setString(9, patient.getY_location());
 
             System.out.println(preparedStatement);
-            // Step 3: Execute the query or update query
             result = preparedStatement.executeUpdate();
 
-            if (result!=0)  //Just to ensure data has been inserted into the database
-                return "SUCCESS";
+            if (result!=0){  //Just to ensure data has been inserted into the database
+
+                return  patient.getPatient_id();
+
+            }
 
         } catch (SQLException e) {
             // process sql exception
             printSQLException(e);
         }
-        return "Oops.. Something went wrong there..!"; // On failure, send a message from here.
+
+        return "ERROR";
     }
 
     private void printSQLException(SQLException ex) {

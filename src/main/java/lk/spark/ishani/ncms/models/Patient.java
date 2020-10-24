@@ -14,6 +14,8 @@ public class Patient {
     private String age;
     private String x_location;
     private String y_location;
+    private String admit_date;
+    private String discharge_date;
 
     public String getPatient_id() {
         return patient_id;
@@ -87,6 +89,14 @@ public class Patient {
         this.y_location = y_location;
     }
 
+    public String getAdmit_date() { return admit_date; }
+
+    public void setAdmit_date(String admit_date) { this.admit_date = admit_date; }
+
+    public String getDischarge_date() { return discharge_date; }
+
+    public void setDischarge_date(String discharge_date) { this.discharge_date = discharge_date; }
+
     public JsonObject serialize() {
         JsonObject data = new JsonObject();
 
@@ -99,8 +109,8 @@ public class Patient {
         data.addProperty("age", this.age);
         data.addProperty("x_location", this.x_location);
         data.addProperty("y_location", this.y_location);
-        data.addProperty("district", this.district);
-
+        data.addProperty("admit_date", this.admit_date);
+        data.addProperty("discharge_date", this.discharge_date);
 
         return data;
     }

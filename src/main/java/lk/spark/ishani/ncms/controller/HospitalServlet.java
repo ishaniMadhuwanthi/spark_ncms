@@ -132,16 +132,32 @@ public class HospitalServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement statement1 = null;
+        PreparedStatement statement2 = null;
 
         try{
             connection = DBConnectionPool.getInstance().getConnection();
 
             String hospital_id = request.getParameter("hospital_id");
+            int result1=0;
+            int result2=0;
 
-            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM hospital WHERE hospital_id=?");
-            pstmt.setString(1, hospital_id);
-            pstmt.executeUpdate();
+            statement1 = connection.prepareStatement("DELETE FROM beds WHERE hospital_id=?");
+            statement1.setString(1, hospital_id);
+            System.out.println(statement1);
+            statement1.executeUpdate();
+
+            statement2 = connection.prepareStatement("DELETE FROM hospital WHERE hospital_id=?");
+            statement2.setString(1, hospital_id);
+            System.out.println(statement2);
+            statement2.executeUpdate();
+
+            //PrintWriter writer=response.getWriter();
+            if ((result1 != 0) || (result2 !=0)){
+                System.out.println("Successfully deleted");//updated successfully
+            }else{
+                System.out.println("deletion failed");//update process failed
+            }
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -184,6 +200,8 @@ public class HospitalServlet extends HttpServlet {
             statement.setString(3, district);
             statement.setString(4, x_location);
             statement.setString(5, y_location);
+            statement.setString(6,hospital_id);
+            System.out.println(statement);
             result = statement.executeUpdate();
 
             connection.close();
@@ -197,8 +215,6 @@ public class HospitalServlet extends HttpServlet {
             dataObject.addProperty("y_location", y_location);
             printWriter.print(dataObject.toString());
 
-
-
             printWriter.println(hospital_id);
             printWriter.println(name);
             printWriter.println(district);
@@ -206,7 +222,7 @@ public class HospitalServlet extends HttpServlet {
             printWriter.println(y_location);
 
 
-            System.out.println("update success");
+            //System.out.println("update success");
 
 
 //            result = statement.executeUpdate();

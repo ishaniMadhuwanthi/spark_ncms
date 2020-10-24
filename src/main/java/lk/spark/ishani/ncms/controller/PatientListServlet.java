@@ -49,6 +49,8 @@ public class PatientListServlet extends HttpServlet {
                 patient.addProperty("age", resultSet.getString("age"));
                 patient.addProperty("x_location", resultSet.getString("x_location"));
                 patient.addProperty("y_location", resultSet.getString("y_location"));
+                patient.addProperty("admit_date", resultSet.getString("admit_date"));
+                patient.addProperty("discharge_date", resultSet.getString("discharge_date"));
 //                hospital.addProperty("patient_count", resultSet.getInt("patient_count"));
                 patients.add(patient);
             }

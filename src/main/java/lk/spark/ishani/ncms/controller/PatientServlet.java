@@ -53,15 +53,23 @@ public class PatientServlet extends HttpServlet {
         PatientDao patientDao = new PatientDao();
         String patientRegistered = patientDao.registerPatient(patient);
 
-        if(patientRegistered.equals("SUCCESS")) { //On success, you can display a message to user on Home page
+        if(!patientRegistered.equals("ERROR")) { //On success, you can display a message to user on Home page
 
+            JsonObject json=new JsonObject();
+            json.addProperty("patient_id",patient_id);
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("utf-8");
+
+            PrintWriter writer = response.getWriter();
+            writer.print(json.toString());
             System.out.println("Success");
         } else {  //On Failure, display a meaningful message to the User.
             System.out.println("Failed");
         }
 
         try {
-            patientDao.registerPatient(patient);
+            //patientDao.registerPatient(patient);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,6 +109,8 @@ public class PatientServlet extends HttpServlet {
                 String age = resultSet.getString("age");
                 String x_location = resultSet.getString("x_location");
                 String y_location = resultSet.getString("y_location");
+                String admit_date= resultSet.getString("admit_date");
+                String discharge_date= resultSet.getString("discharge_date");
 
                 PrintWriter printWriter = response.getWriter();
 
@@ -124,7 +134,9 @@ public class PatientServlet extends HttpServlet {
                 jsonObject.addProperty("age", age);
                 jsonObject.addProperty("x_location", x_location);
                 jsonObject.addProperty("y_location", y_location);
-                printWriter.print(jsonObject.toString());
+                jsonObject.addProperty("admit_date", admit_date);
+                jsonObject.addProperty("discharge_date", discharge_date);
+               // printWriter.print(jsonObject.toString());
 
                 System.out.println("doGet patient success");
 
@@ -132,15 +144,24 @@ public class PatientServlet extends HttpServlet {
                 String nearestHospital = hospital.assignHospital(x_location, y_location);
                 System.out.println("Nearest hospital: " + nearestHospital);
 
+                jsonObject.addProperty("nearestHospital", nearestHospital);
+                //printWriter.print(jsonObject.toString());
+
+
                 Bed bed = new Bed();
                 int bed_id = bed.allocateBed(nearestHospital, patient_id);
                 System.out.println("Bed ID: " + bed_id);
+
+                jsonObject.addProperty("bed_id", bed_id);
+                printWriter.print(jsonObject.toString());
+
                 int bedNo = 0;
 
                 if(bed_id == 0){
                     statement2 = connection.prepareStatement("SELECT distinct hospital_id FROM hospital where hospital_id !='" + nearestHospital + "'");
                     System.out.println(statement2);
                     resultSet2 = statement2.executeQuery();
+
                     String hosId ="";
                     int queueLength;
 
@@ -167,5 +188,93 @@ public class PatientServlet extends HttpServlet {
 
         }
     }
+
+    /*
+    --------------update patient by entering admit details-------------
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String patient_id = request.getParameter("patient_id");
+        String first_name = request.getParameter("first_name");
+        String last_name = request.getParameter("last_name");
+        String contact = request.getParameter("contact");
+        String district = request.getParameter("district");
+        String email = request.getParameter("email");
+        String age = request.getParameter("age");
+        String x_location = request.getParameter("x_location");
+        String y_location = request.getParameter("y_location");
+        String admit_date = request.getParameter("admit_date");
+        String discharge_date = request.getParameter("discharge_date");
+
+        try {
+            Connection connection = DBConnectionPool.getInstance().getConnection();
+            PreparedStatement statement=null;
+            int result=0;
+
+            statement = connection.prepareStatement("UPDATE patient SET  patient_id=?,first_name=?,last_name=?,contact=?, district=?,email=?,age=?, x_location=?,y_location=?,admit_date=?,discharge_date=? WHERE patient_id=?");
+            ResultSet resultSet;
+
+            statement.setString(1,patient_id);
+            statement.setString(2,first_name);
+            statement.setString(3,last_name);
+            statement.setString(4,contact);
+            statement.setString(5, district);
+            statement.setString(6,email);
+            statement.setString(7,age);
+            statement.setString(8, x_location);
+            statement.setString(9, y_location);
+            statement.setString(10,admit_date);
+            statement.setString(11,discharge_date);
+            statement.setString(12,patient_id);
+            System.out.println(statement);
+            result = statement.executeUpdate();
+
+            connection.close();
+            PrintWriter printWriter = response.getWriter();
+
+            JsonObject dataObject = new JsonObject();
+            dataObject.addProperty("patient_id", patient_id);
+            dataObject.addProperty("first_name", first_name);
+            dataObject.addProperty("last_name", last_name);
+            dataObject.addProperty("contact", contact);
+            dataObject.addProperty("district", district);
+            dataObject.addProperty("email", email);
+            dataObject.addProperty("age", age);
+            dataObject.addProperty("x_location", x_location);
+            dataObject.addProperty("y_location", y_location);
+            dataObject.addProperty("admit_date", admit_date);
+            dataObject.addProperty("discharge_date",discharge_date);
+            printWriter.print(dataObject.toString());
+
+            printWriter.println(patient_id);
+            printWriter.println(first_name);
+            printWriter.println(last_name);
+            printWriter.println(contact);
+            printWriter.println(district);
+            printWriter.println(email);
+            printWriter.println(age);
+            printWriter.println(x_location);
+            printWriter.println(y_location);
+            printWriter.println(admit_date);
+            printWriter.println(discharge_date);
+
+
+            //System.out.println("update success");
+
+
+//            result = statement.executeUpdate();
+            if (result != 0){
+                System.out.println("Successfully updated");//updated successfully
+            }else{
+                System.out.println("Update failed");//update process failed
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 }

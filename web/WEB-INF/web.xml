@@ -36,8 +36,27 @@
         <servlet-class>lk.spark.ishani.ncms.controller.HospitalListServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>DoctorListServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.DoctorListServlet</servlet-class>
+    </servlet>
 
-    <!--    servlet mappings-->
+    <servlet>
+        <servlet-name>PatientListServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.PatientListServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.LoginServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>MohLoginServlet</servlet-name>
+        <servlet-class>lk.spark.ishani.ncms.controller.MohLoginServlet</servlet-class>
+    </servlet>
+
+    <!--servlet mappings-->
     <servlet-mapping>
         <servlet-name>PatientServlet</servlet-name>
         <url-pattern>/patientRegister</url-pattern>
@@ -67,5 +86,26 @@
         <servlet-name>HospitalListServlet</servlet-name>
         <url-pattern>/HospitalList</url-pattern>
     </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DoctorListServlet</servlet-name>
+        <url-pattern>/DoctorList</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>PatientListServlet</servlet-name>
+        <url-pattern>/PatientList</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MohLoginServlet</servlet-name>
+        <url-pattern>/MohLogin</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>
