@@ -3,8 +3,8 @@
 ## Introduction
  
 Individual project for SparkX Proffessional Development Program-2020. A Covid Management System to manage hospitals and patients enabling displaying patient and hospital statistics by hospital level, district level and country level. 
-Backend developed using Java & MySQL.
-Frontend developed using HTML,CSS and JavaScript.
+..Backend developed using Java & MySQL.
+..Frontend developed using HTML,CSS and JavaScript.
 
 - Backend: [View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_backend)
 + Frontend:[View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_frontend)
@@ -23,7 +23,7 @@ National COVID Management System-web application backend design. Following funct
 System functionalities have developed by considering following documents .
 - SRS Document (Software Requirement Specification Document)
 + SDD Document (Software Design Documents)
-You can view the above documents from this repository.
+..You can view the above documents from this repository.
 
 ## Instructions
 
