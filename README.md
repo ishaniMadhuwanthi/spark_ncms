@@ -1,4 +1,4 @@
-##SPARK
+# SPARK
 
  # Introduction
  
@@ -9,8 +9,7 @@ Frontend developed using HTML,CSS and JavaScript.
 Backend:   View Repository
 Frontend:  View Repository
 
-
-#About Project
+# About Project
 
 National COVID Management System-web application backend design. Following functionalities are included in the system.
 
@@ -19,8 +18,7 @@ Only patients can register to the system and a bed is allocated for them. If bed
 When a patient is discharged, the director can remove the patient and make bed available.
 Moh can manage the system. They can add/delete/update hospitals, add/delete/update doctors and directors.
 
-
-#Documents 
+# Documents 
 
 System functionalities have developed by considering following documents .
 SRS Document (Software Requirement Specification Document)
@@ -41,9 +39,9 @@ basicDataSource.setUsername("enter your MySQL username");
 basicDataSource.setPassword("enter your database password");    
 
 
-#Dependencies     
+# Dependencies     
 
-javax: javaee-web-api>8.0.1
+javax: javaee-web-api:8.0.1
 javax.servlet:  javax.servlet-api :3.1.0         
 com.google.code.gson:gson:  2.8.6
 Org.apache.commons:commons-dbcp2:2.7.0
