@@ -6,8 +6,8 @@ Individual project for SparkX Proffessional Development Program-2020. A Covid Ma
 Backend developed using Java & MySQL.
 Frontend developed using HTML,CSS and JavaScript.
 
-..* Backend: [View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_backend)
-..* Frontend:[View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_frontend)
+- Backend: [View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_backend)
++ Frontend:[View Repository](https://github.com/ishaniMadhuwanthi/spark_ncms_frontend)
 
 ## About Project
 
