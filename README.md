@@ -23,8 +23,8 @@ National COVID Management System-web application backend design. Following funct
 # Documents 
 
 System functionalities have developed by considering following documents .
-- SRS Document (Software Requirement Specification Document)
-+ SDD Document (Software Design Documents)
+- [SRS Document](https://github.com/ishaniMadhuwanthi/spark_ncms_backend/blob/master/SRS%20Document.pdf) (Software Requirement Specification Document)
++ [SDD Document](https://github.com/ishaniMadhuwanthi/spark_ncms_backend/blob/master/SD%20Document.pdf) (Software Design Documents)
 
 You can view the above documents from this repository.
 
